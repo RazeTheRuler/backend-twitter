@@ -185,7 +185,7 @@ split_transformer() ->
 % Get HTTP chunks and reassemble them into chunks that we get
 % as a result of specifying delimited=length.
 % https://dev.twitter.com/streaming/overview/processing
-split_loop(Sink, Sender, Buffer) -> 
+split_loop(Sink, Sender, Buffer) -> %io:format("~nBuffer:~p~n", [Buffer]),
   case pop_size(Buffer) of
     {size, N, Rest} ->
       case buffer_pop_n(Rest, N, Sender) of
@@ -230,10 +230,18 @@ buffer_pop_n(B, N, Sender) ->
 % We should also support discarding \r\n here
 % (see 'blank lines' in https://dev.twitter.com/streaming/overview/messages-types)
 pop_size(<<>>) -> {more, 1};
+ 
+
 pop_size(<<A,Rest/binary>>) when A >= $0, A =< $9 ->
   pop_size((A - $0), 1, Rest).   
+
 pop_size(_N, L, <<>>) -> {more, L+1};
+
 pop_size(_N, L, <<"\r">>) -> {more, L+2};
+
+%pop_size(_N, L, <<"\r\n">>) -> io:format("~nThis is N:~p~n This is L:~p~n", [_N, L]);
+
 pop_size(N, L, <<A,Rest/binary>>) when A >= $0, A =< $9 ->
+
   pop_size(N * 10 + (A - $0), L+1, Rest);
 pop_size(N, _L, <<"\r\n",Rest/binary>>) -> {size, N, Rest}.

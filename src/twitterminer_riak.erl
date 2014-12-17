@@ -25,7 +25,6 @@ get_riak_hostport(Name) ->
   #hostport{host=keyfind(host, Keys),
             port=keyfind(port, Keys)}.
 
-%% @doc This example will download a sample of tweets and print it.
 start_stream({Category, Account}, Track) ->
   URL = "https://stream.twitter.com/1.1/statuses/filter.json",
 
@@ -43,7 +42,7 @@ start_stream({Category, Account}, Track) ->
   T = spawn_link(fun () ->
         receive
           cancel -> ok
-        after 60000 -> % Sleep fo 60 s
+        after 30000 -> % Sleep fo 60 s
             twitterminer_pipeline:terminate(P),io:format("Stream done for Pid: ~p and Category: ~p~n", [Pid, Category])
         
         end
@@ -54,9 +53,6 @@ start_stream({Category, Account}, Track) ->
   Res.
 
 %%Concurrency for the streaming part. 
-
-
-%% Testa ta bort allt gällande counting tweets i twitter pipeline! 
 
 gather_concurrent() ->
             spawn(twitterminer_riak, start_stream, [{index, account1}, {track, "svpol, nyval, extraval, omval, migpol"}]), 
@@ -71,9 +67,6 @@ gather_concurrent() ->
             spawn(twitterminer_riak, start_stream, [{centerpartiet, account4}, {track, "centerpartiet, annie lööf"}]).
 
 
-            
-
-%%%%%%%%%% Fundera på om concurrency behövs både i streamen och i sorting-delen. 
 
 gather_tweets() ->  
 Trackers = [{{index, account1}, {track, "svpol, nyval, extraval, omval, migpol"}}, {{sosse, account2}, {track, "socialdemokraterna, löfven"}}, 
@@ -81,14 +74,13 @@ Trackers = [{{index, account1}, {track, "svpol, nyval, extraval, omval, migpol"}
  {{miljopartiet, account2}, {track, "miljö, fridolin, miljöpartiet, romsom"}}, {{kristdemokraterna, account6}, {track, "kristdemokraterna, hägglund, kyrkan"}},
   {{vanstern, account5}, {track, "vänstern, kommunism, vänsterpartiet, ungvänster, vansterpartiet"}}, {{folkpartiet, account5}, {track, "folkpartiet, jan björklund, skolan"}},
   {{feminism, account4}, {track, "schyman, feminist, feministiskt initiativ"}}, {{centerpartiet, account4}, {track, "centerpartiet, annie lööf"}}],
-[start_stream({Category, Account}, {Track, Words}) || {{Category, Account}, {Track, Words}} <- Trackers], timer:sleep(1000). 
+[start_stream({Category, Account}, {Track, Words}) || {{Category, Account}, {Track, Words}} <- Trackers], timer:sleep(300000), initiate_bucket_purge(). 
 
 
 %% @doc Create a pipeline that connects to twitter and
 %% saves tweets to Riak. We save all messages that have ids,
 %% which might include delete notifications etc.
 twitter_save_pipeline(Pid, URL, Keys, Category, Track) ->
-
 
 
   Prod = twitterminer_source:twitter_producer(URL, Keys, Track),
@@ -111,16 +103,6 @@ save_tweet(_, _) -> io:format("save_tweet did not match: ~n", []).
 
 
 
-
-
-
-%               application:ensure_all_started(twitterminer).
-
-%                 
-
-
-
-
   
 
 binary(Category) ->
@@ -137,7 +119,7 @@ sort_list( Category_list, Id_list)->
     lists:flatten(Res).
 
 
-             %%Example of using the sorting part concurrency. Although, before starting need to exclude the percentage calculation functionalities, since it only supports one instance running. 
+             %%Example of using the sorting part concurrency.
 
           tryPurge() -> spawn(twitterminer_riak, concurrent_purge, [account4, index, 20]),
             spawn(twitterminer_riak, concurrent_purge, [account1, sosse, 20]), 
@@ -150,7 +132,6 @@ sort_list( Category_list, Id_list)->
             spawn(twitterminer_riak, concurrent_purge, [account5, feminism, 20]),
             spawn(twitterminer_riak, concurrent_purge, [account4, centerpartiet, 20]).
 
-          %%Also need to one argument to initiate_bucket_purge and use it instead of the hardcoded category atom in Category_buckets.
 
 
 
@@ -178,7 +159,7 @@ Spawn = spawn(twitterminer_riak, init, [allthebuckets]),
 RHP = get_riak_hostport(riak1),
   {ok, Pid} = riakc_pb_socket:start_link(RHP#hostport.host, RHP#hostport.port),
 
-  Constraint = 20,
+  Constraint = 5,
 
 Category_buckets = [{index, account1}, {sosse, account2}, {moderaterna, account6}, {sd, account1}, {miljopartiet, account2}, {kristdemokraterna, account6}, {vanstern, account5},
 {folkpartiet, account5}, {feminism, account4}, {centerpartiet, account4}],
@@ -194,7 +175,7 @@ Key_list = [riakc_pb_socket:list_keys(Pid, X) || X <- Binary_List], Filtered = [
 
  Tuples = sort_list( Category_buckets, Filtered),
 
- [update_tweet(Pid, Constraint, Spawn, {{Account, C},list_to_integer(binary_to_list(T)) }) || {{Account, C}, T} <- Tuples], Spawn ! complete. %, timer:sleep(5000), gather_tweets().
+ [update_tweet(Pid, Constraint, Spawn, {{Account, C},list_to_integer(binary_to_list(T)) }) || {{Account, C}, T} <- Tuples], Spawn ! complete, timer:sleep(20000), gather_tweets().
 
 
 
@@ -234,7 +215,7 @@ print(Key) ->
 
 
 
-{_, _, _, Result} = ibrowse:send_req(oauth:uri(URL, SignedParams), [], get, []), %io:format("This is it: ~p", [oauth:uri(URL, SignedParams)]),
+{_, _, _, Result} = ibrowse:send_req(oauth:uri(URL, SignedParams), [], get, []), 
 
 Decorated = twitterminer_source:decorate_with_id(Result),
 case Decorated of {parsed_tweet, [{_, [{L}]}], _Tweet_body, no_id} -> 
@@ -244,15 +225,8 @@ case lists:keyfind(<<"code">>, 1, L) of
   {_, 88} -> lists:foreach(fun(X) -> lists:foreach(fun(Y) -> io:format("Limit reached for Category ~p! ~p minutes and ~p seconds remaining ..~n",[Category, X, Y]), timer:sleep(1000) end, lists:reverse(lists:seq(0, 59))) end, lists:reverse(lists:seq(0, 14)));
   {_, _Er} -> io:format("Error: ~p~n", [L]), riakc_pb_socket:delete(Pid, binary(Category), list_to_binary(integer_to_list(Bucket_key))), Spawn ! {errors, L}  end;
  
-  _ -> sort_to_tweet(Pid, Constraint, Spawn, Category, Decorated) end. %io:format("Tweet: ~p~n", [Decorated]).
+  _ -> sort_to_tweet(Pid, Constraint, Spawn, Category, Decorated) end. 
 
-
-%sort_to_tweet(_, _, {parsed_tweet, [{_, [{L}]}], _Tweet_body, no_id}) -> case lists:keyfind(<<"code">>, 1, L) of
- %           {_, 88} -> lists:foreach(fun(X) -> lists:foreach(fun(Y) -> io:format("~p minutes and ~p seconds remaining ..~n",[X, Y]), timer:sleep(1000) end, lists:reverse(lists:seq(0, 59))) end, lists:reverse(lists:seq(0, 14)));    %   )
-
-            %[io:format("~p minutes remaining ..~n", [X]), timer:sleep(60000) || X <- lists:reverse(lists:seq(1, 15))]; %io:format("Rate limit exceeded! Waiting for 15 minutes. ~n", []), timer:sleep(900000);
- %           {_, _} -> io:format("Error: ~p~n", [L]), namereg ! {self(), errors} end;
-%
 
 sort_to_tweet(Pid, Constraint, Spawn, Category, {parsed_tweet, L, Tweet_body, {id, Id}}) -> 
   		case lists:keyfind(<<"retweet_count">>, 1, L) of
@@ -263,11 +237,6 @@ sort_to_tweet(Pid, Constraint, Spawn, Category, {parsed_tweet, L, Tweet_body, {i
    		 false -> io:format("No retweet_count found..~n", []) end;
 
 sort_to_tweet(_,_ , _, _, Stuff) -> io:format("Unknown input: ~p~n", [Stuff]).
-
-
-
-
-%application:ensure_all_started(twitterminer).
 
 
 
@@ -301,34 +270,12 @@ io:format("Tweets sorted: ~p in bucket <<~p>>. Results are as following:~n Popul
 false -> io:format("No tweets sorted in bucket <<~p>>.~n", [Category]) end.
 
 
-%{parsed_tweet,[{<<"errors">>,
- %                      [{[{<<"message">>,
-  %                         <<"Sorry, that page does not exist">>},
-   %                       {<<"code">>,34}]}]}],
-    %                 "{\"errors\":[{\"message\":\"Sorry, that page does not exist\",\"code\":34}]}",
-     %                no_id}
-
-
-%{parsed_tweet,[{<<"errors">>,
- %                      [{[{<<"message">>,<<"Rate limit exceeded">>},
-  %                        {<<"code">>,88}]}]}],
-   %                  "{\"errors\":[{\"message\":\"Rate limit exceeded\",\"code\":88}]}",
-    %                 no_id}
-
-    %Tweetbody = "{\"errors\":[{\"message\":\"Rate limit exceeded\",\"code\":88}]}"
-
-
-
-  %sort_to_text({parsed_tweet, L, _Tweet_body, {id, _Id}}) -> 
-  %case lists:keyfind(<<"text">>, 1, L) of
-   % {_, Text} -> Text;
-    %false -> false end.
 
 updateCategory(Category) -> list_to_atom(atom_to_list(Category) ++ "popular"). 
 
 
 
-delete_tweet(Pid, Category, {parsed_tweet, _L, _Tweet_body, {id, Id}}) ->                                %%lägg till category
+delete_tweet(Pid, Category, {parsed_tweet, _L, _Tweet_body, {id, Id}}) ->                             
 riakc_pb_socket:delete(Pid, binary(Category), list_to_binary(integer_to_list(Id)));
 	delete_tweet(_, _, _) -> io:format("delete_tweet did not match: ~n", []).
 
