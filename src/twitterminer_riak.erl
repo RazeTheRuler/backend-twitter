@@ -74,7 +74,7 @@ Trackers = [{{index, account1}, {track, "svpol, nyval, extraval, omval, migpol"}
  {{miljopartiet, account2}, {track, "miljö, fridolin, miljöpartiet, romsom"}}, {{kristdemokraterna, account6}, {track, "kristdemokraterna, hägglund, kyrkan"}},
   {{vanstern, account5}, {track, "vänstern, kommunism, vänsterpartiet, ungvänster, vansterpartiet"}}, {{folkpartiet, account5}, {track, "folkpartiet, jan björklund, skolan"}},
   {{feminism, account4}, {track, "schyman, feminist, feministiskt initiativ"}}, {{centerpartiet, account4}, {track, "centerpartiet, annie lööf"}}],
-[start_stream({Category, Account}, {Track, Words}) || {{Category, Account}, {Track, Words}} <- Trackers], timer:sleep(300000), initiate_bucket_purge(). 
+[start_stream({Category, Account}, {Track, Words}) || {{Category, Account}, {Track, Words}} <- Trackers], timer:sleep(300000), gather_tweets(). 
 
 
 %% @doc Create a pipeline that connects to twitter and
@@ -161,8 +161,8 @@ RHP = get_riak_hostport(riak1),
 
   Constraint = 5,
 
-Category_buckets = [{index, account1}, {sosse, account2}, {moderaterna, account6}, {sd, account1}, {miljopartiet, account2}, {kristdemokraterna, account6}, {vanstern, account5},
-{folkpartiet, account5}, {feminism, account4}, {centerpartiet, account4}],
+Category_buckets = [{account1, index}, { account2, sosse}, {account6,moderaterna}, {account1, sd}, {account2, miljopartiet}, {account6, kristdemokraterna}, {account5, vanstern},
+{account5, folkpartiet}, {account4, feminism}, {account4, centerpartiet}],
 
 Get_categories = [element(2, X) || X <- Category_buckets],
 
@@ -223,7 +223,7 @@ case Decorated of {parsed_tweet, [{_, [{L}]}], _Tweet_body, no_id} ->
 
 case lists:keyfind(<<"code">>, 1, L) of
   {_, 88} -> lists:foreach(fun(X) -> lists:foreach(fun(Y) -> io:format("Limit reached for Category ~p! ~p minutes and ~p seconds remaining ..~n",[Category, X, Y]), timer:sleep(1000) end, lists:reverse(lists:seq(0, 59))) end, lists:reverse(lists:seq(0, 14)));
-  {_, _Er} -> io:format("Error: ~p~n", [L]), riakc_pb_socket:delete(Pid, binary(Category), list_to_binary(integer_to_list(Bucket_key))), Spawn ! {errors, L}  end;
+  {_, _Er} -> io:format("Error: ~p~n", [L]), riakc_pb_socket:delete(Pid, binary(Category), list_to_binary(integer_to_list(Bucket_key))), Spawn ! {errors, L, Category}  end;
  
   _ -> sort_to_tweet(Pid, Constraint, Spawn, Category, Decorated) end. 
 
@@ -232,8 +232,8 @@ sort_to_tweet(Pid, Constraint, Spawn, Category, {parsed_tweet, L, Tweet_body, {i
   		case lists:keyfind(<<"retweet_count">>, 1, L) of
    		 {_, Count} -> 
 					case Count > Constraint of
-      				true -> save_popular(Pid, Category, {parsed_tweet, L, Tweet_body, {id, Id}}), delete_tweet(Pid, Category, {parsed_tweet, L, Tweet_body, {id, Id}}) , io:format("Saved: ~p into ~p~n", [Id, Category]), Spawn ! {saved, L};
-      				false -> delete_tweet(Pid, Category, {parsed_tweet, L, Tweet_body, {id, Id}}), io:format("Deleted ~p from ~p~n", [Id, Category]), Spawn ! {deleted, L} end;
+      				true -> save_popular(Pid, Category, {parsed_tweet, L, Tweet_body, {id, Id}}), delete_tweet(Pid, Category, {parsed_tweet, L, Tweet_body, {id, Id}}) , io:format("Saved: ~p into ~p~n", [Id, Category]), Spawn ! {saved, L, Category};
+      				false -> delete_tweet(Pid, Category, {parsed_tweet, L, Tweet_body, {id, Id}}), io:format("Deleted ~p from ~p~n", [Id, Category]), Spawn ! {deleted, L, Category} end;
    		 false -> io:format("No retweet_count found..~n", []) end;
 
 sort_to_tweet(_,_ , _, _, Stuff) -> io:format("Unknown input: ~p~n", [Stuff]).
@@ -241,9 +241,9 @@ sort_to_tweet(_,_ , _, _, Stuff) -> io:format("Unknown input: ~p~n", [Stuff]).
 
 
 counter_loop(Saved, Deleted, Errors, Category) ->                 %Puts every tweet in a list
-receive {saved, Body} -> counter_loop(Saved ++ [Body], Deleted, Errors, Category);
-        {deleted, Body}->  counter_loop(Saved, Deleted ++ [Body], Errors, Category);
-        {errors, Body} ->   counter_loop(Saved, Deleted, Errors ++ [Body], Category);
+receive {saved, Body, Bucket} -> counter_loop(Saved ++ [Body], Deleted, Errors, Bucket);
+        {deleted, Body, Bucket}->  counter_loop(Saved, Deleted ++ [Body], Errors, Bucket);
+        {errors, Body, Bucket} ->   counter_loop(Saved, Deleted, Errors ++ [Body], Bucket);
         complete ->  calculate(Saved, Deleted, Errors, Category) end.
 
 init(Category) -> counter_loop([], [], [], Category).

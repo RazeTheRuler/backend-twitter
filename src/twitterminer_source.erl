@@ -1,6 +1,6 @@
 -module(twitterminer_source).
 
--export([twitter_example/0, split_transformer/0, decorate_with_id/1, twitter_print_pipeline/2, twitter_producer/3, get_account_keys/1]).
+-export([split_transformer/0, decorate_with_id/1, twitter_producer/3, get_account_keys/1]).
 
 -record(account_keys, {api_key, api_secret,
                        access_token, access_token_secret}).
@@ -19,42 +19,8 @@ get_account_keys(Name) ->
                 access_token_secret=keyfind(access_token_secret, Keys)}.
 
 %% @doc This example will download a sample of tweets and print it.
-twitter_example() ->
-  URL = "https://stream.twitter.com/1.1/statuses/filter.json",
-
-  % We get our keys from the twitterminer.config configuration file.
-  Keys = get_account_keys(account1),
-
-  % Run our pipeline
-  P = twitterminer_pipeline:build_link(twitter_print_pipeline(URL, Keys)),
-
-  % If the pipeline does not terminate after 60 s, this process will
-  % force it.
-  T = spawn_link(fun () ->
-        receive
-          cancel -> ok
-        after 60000 -> % Sleep fo 60 s
-            twitterminer_pipeline:terminate(P)
-        end
-    end),
-
-  Res = twitterminer_pipeline:join(P),
-  T ! cancel,
-  Res.
 
 
-
-
-
-
-
-%% @doc Create a pipeline that connects to twitter and
-%% prints tweets.
-twitter_print_pipeline(URL, Keys) ->
-
-  Prod = twitter_producer(URL, Keys, dontNeedThis),
-  % Pipelines are constructed 'backwards' - consumer is first, producer is last.
-  [twitterminer_pipeline:consumer(fun(Msg, N) -> my_print(Msg), N+1 end, 0),  twitterminer_pipeline:map(fun decorate_with_id/1), split_transformer(), Prod].
 
 %% @doc Create a pipeline producer that opens a connection
 %% to a Twitter streaming API endpoint.
@@ -133,11 +99,6 @@ receive_tweets({loop, Pid, RId}) ->
   end.
 
 % Extract the value of a key from a parsed JSON message.
-extract(K, L) ->
-  case lists:keyfind(K, 1, L) of
-    {_, M} -> {found, M};
-    false  -> not_found
-  end.
 
 % Parse the tweet JSON and extract the id, if present.
 % https://dev.twitter.com/streaming/overview/messages-types
@@ -157,24 +118,6 @@ decorate_with_id(B) ->
     _ -> {invalid_tweet, B}
   end.
 
-my_print(T) ->
-  case T of
-    {parsed_tweet, L, B, _} ->  
-      case extract(<<"warning">>, L) of
-        {found, _} -> io:format("~s~n", [B]);
-        not_found -> ok
-      end,
-      case extract(<<"text">>, L) of
-        {found, TT} -> io:format("tweet: ~ts~n", [TT]);
-        not_found -> ok
-          %case extract(<<"delete">>, L) of
-          %  {found, _} -> io:format("deleted: ~p~n", [L]);
-          %  not_found -> io:format("~s~n", [B])
-          %end
-      end;
-    {invalid_tweet, B} -> io:format("failed to parse: ~s~n", [B])
-  end.
-
 print_headers(C) ->
   lists:append(lists:map(fun ({X, Y}) -> lists:append([X, ":", Y, ", "]) end, C)).
 
@@ -185,7 +128,8 @@ split_transformer() ->
 % Get HTTP chunks and reassemble them into chunks that we get
 % as a result of specifying delimited=length.
 % https://dev.twitter.com/streaming/overview/processing
-split_loop(Sink, Sender, Buffer) -> %io:format("~nBuffer:~p~n", [Buffer]),
+split_loop(Sink, Sender, Buffer) -> case Buffer == <<"\r\n">> of
+  false ->
   case pop_size(Buffer) of
     {size, N, Rest} ->
       case buffer_pop_n(Rest, N, Sender) of
@@ -207,7 +151,8 @@ split_loop(Sink, Sender, Buffer) -> %io:format("~nBuffer:~p~n", [Buffer]),
         {terminate, _Chunk}    -> Sink ! terminate;
         {error, Reason, Chunk} -> Sink ! {error, {Reason, Chunk}}
       end
-  end.     %%%%%%Continue here
+  end;
+  true -> twitterminer_riak:gather_tweets() end. 
 
 
 % Get a chunk of N bytes from the buffer. If there is not enough data
@@ -238,8 +183,6 @@ pop_size(<<A,Rest/binary>>) when A >= $0, A =< $9 ->
 pop_size(_N, L, <<>>) -> {more, L+1};
 
 pop_size(_N, L, <<"\r">>) -> {more, L+2};
-
-%pop_size(_N, L, <<"\r\n">>) -> io:format("~nThis is N:~p~n This is L:~p~n", [_N, L]);
 
 pop_size(N, L, <<A,Rest/binary>>) when A >= $0, A =< $9 ->
 
