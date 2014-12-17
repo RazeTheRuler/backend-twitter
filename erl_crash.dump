@@ -1,51 +1,51 @@
 =erl_crash_dump:0.2
-Fri Dec  5 15:11:48 2014
-Slogan: could not start kernel pid (application_controller) (error in config file "./twitterminerA.config" (none): configuration file not found)
+Mon Dec 15 13:15:18 2014
+Slogan: could not start kernel pid (application_controller) (error in config file "./twitterminer.config" (24): syntax error before: '}')
 System version: Erlang R16B02 (erts-5.10.3) [source] [64-bit] [smp:4:4] [async-threads:10] [kernel-poll:false]
 Compiled: Thu Nov 20 17:31:24 2014
 Taints: 
-Atoms: 2986
+Atoms: 3585
 =memory
-total: 7299696
+total: 7513496
 processes: 3334360
 processes_used: 3331064
-system: 3965336
-atom: 76753
-atom_used: 68964
-binary: 227576
-code: 805834
+system: 4179136
+atom: 117721
+atom_used: 85369
+binary: 363320
+code: 809114
 ets: 64264
 =hash_table:atom_tab
 size: 2411
-used: 1691
-objs: 2986
-depth: 6
+used: 1858
+objs: 3585
+depth: 7
 =index_table:atom_tab
-size: 3072
+size: 4096
 limit: 1048576
-entries: 2986
+entries: 3585
 =hash_table:module_code
 size: 47
 used: 22
-objs: 26
+objs: 27
 depth: 2
 =index_table:module_code
 size: 1024
 limit: 65536
-entries: 26
+entries: 27
 =hash_table:export_list
 size: 3203
-used: 931
-objs: 1112
+used: 937
+objs: 1129
 depth: 6
 =index_table:export_list
 size: 2048
 limit: 524288
-entries: 1112
+entries: 1129
 =hash_table:export_list
 size: 3203
-used: 931
-objs: 1112
+used: 937
+objs: 1129
 depth: 6
 =hash_table:process_reg
 size: 5
@@ -70,11 +70,11 @@ depth: 1
 =allocated_areas
 sys_misc: 99011
 static: 524928
-atom_space: 32776 24987
-atom_table: 43977
-module_table: 32064
+atom_space: 65552 33200
+atom_table: 52169
+module_table: 32352
 export_table: 126372
-export_list: 195712
+export_list: 198704
 register_table: 132
 fun_table: 866
 module_refs: 624
@@ -198,7 +198,7 @@ option mbcgs: 10
 option acul: 0
 option as: af
 mbcs blocks: 0 4 4
-mbcs blocks size: 0 7640 7640
+mbcs blocks size: 0 27752 27752
 mbcs carriers: 1 1 1
 mbcs mseg carriers: 1
 mbcs sys_alloc carriers: 0
@@ -213,8 +213,8 @@ sbcs sys_alloc carriers: 0
 sbcs carriers size: 0 0 0
 sbcs mseg carriers size: 0
 sbcs sys_alloc carriers size: 0
-temp_alloc calls: 18133
-temp_free calls: 18133
+temp_alloc calls: 22025
+temp_free calls: 22025
 temp_realloc calls: 0
 mseg_alloc calls: 1
 mseg_dealloc calls: 0
@@ -416,7 +416,7 @@ option acul: 0
 option mbsd: 3
 option as: gf
 mbcs blocks: 0 259 259
-mbcs blocks size: 0 55384 55384
+mbcs blocks size: 0 100648 100648
 mbcs carriers: 1 1 1
 mbcs mseg carriers: 1
 mbcs sys_alloc carriers: 0
@@ -431,8 +431,8 @@ sbcs sys_alloc carriers: 0
 sbcs carriers size: 0 0 0
 sbcs mseg carriers size: 0
 sbcs sys_alloc carriers size: 0
-sl_alloc calls: 1543
-sl_free calls: 1543
+sl_alloc calls: 1651
+sl_free calls: 1651
 sl_realloc calls: 0
 mseg_alloc calls: 1
 mseg_dealloc calls: 0
@@ -633,7 +633,7 @@ option mbcgs: 10
 option acul: 0
 option as: bf
 mbcs blocks: 6 12 12
-mbcs blocks size: 1656 12144 12144
+mbcs blocks size: 1656 12192 12192
 mbcs carriers: 1 1 1
 mbcs mseg carriers: 1
 mbcs sys_alloc carriers: 0
@@ -648,8 +648,8 @@ sbcs sys_alloc carriers: 0
 sbcs carriers size: 0 0 0
 sbcs mseg carriers size: 0
 sbcs sys_alloc carriers size: 0
-std_alloc calls: 56
-std_free calls: 50
+std_alloc calls: 59
+std_free calls: 53
 std_realloc calls: 0
 mseg_alloc calls: 1
 mseg_dealloc calls: 0
@@ -761,13 +761,13 @@ option smbcs: 1048576
 option mbcgs: 10
 option acul: 0
 option as: aobf
-mbcs blocks: 4598 4690 4690
-mbcs blocks size: 6687864 7486416 7486416
-mbcs carriers: 3 4 4
-mbcs mseg carriers: 3
+mbcs blocks: 5219 5316 5316
+mbcs blocks size: 6765920 7914576 7914576
+mbcs carriers: 4 4 4
+mbcs mseg carriers: 4
 mbcs sys_alloc carriers: 0
-mbcs carriers size: 7340032 11534336 11534336
-mbcs mseg carriers size: 7340032
+mbcs carriers size: 11534336 11534336 11534336
+mbcs mseg carriers size: 11534336
 mbcs sys_alloc carriers size: 0
 sbcs blocks: 0 0 0
 sbcs blocks size: 0 0 0
@@ -777,11 +777,11 @@ sbcs sys_alloc carriers: 0
 sbcs carriers size: 0 0 0
 sbcs mseg carriers size: 0
 sbcs sys_alloc carriers size: 0
-ll_alloc calls: 4691
-ll_free calls: 93
-ll_realloc calls: 62
+ll_alloc calls: 5317
+ll_free calls: 98
+ll_realloc calls: 67
 mseg_alloc calls: 4
-mseg_dealloc calls: 1
+mseg_dealloc calls: 0
 mseg_realloc calls: 0
 sys_alloc calls: 0
 sys_free calls: 0
@@ -894,12 +894,12 @@ option acul: 0
 option mbsd: 3
 option as: gf
 mbcs blocks: 2 12 12
-mbcs blocks size: 38376 235696 235696
-mbcs carriers: 1 2 2
-mbcs mseg carriers: 1
+mbcs blocks size: 38376 276536 276536
+mbcs carriers: 2 2 2
+mbcs mseg carriers: 2
 mbcs sys_alloc carriers: 0
-mbcs carriers size: 262144 524288 524288
-mbcs mseg carriers size: 262144
+mbcs carriers size: 524288 524288 524288
+mbcs mseg carriers size: 524288
 mbcs sys_alloc carriers size: 0
 sbcs blocks: 0 0 0
 sbcs blocks size: 0 0 0
@@ -911,9 +911,9 @@ sbcs mseg carriers size: 0
 sbcs sys_alloc carriers size: 0
 eheap_alloc calls: 180
 eheap_free calls: 178
-eheap_realloc calls: 13
+eheap_realloc calls: 12
 mseg_alloc calls: 2
-mseg_dealloc calls: 1
+mseg_dealloc calls: 0
 mseg_realloc calls: 0
 sys_alloc calls: 0
 sys_free calls: 0
@@ -1362,8 +1362,8 @@ sbcs sys_alloc carriers: 0
 sbcs carriers size: 0 0 0
 sbcs mseg carriers size: 0
 sbcs sys_alloc carriers size: 0
-fix_alloc calls: 721
-fix_free calls: 721
+fix_alloc calls: 757
+fix_free calls: 757
 fix_realloc calls: 0
 mseg_alloc calls: 1
 mseg_dealloc calls: 0
@@ -1489,13 +1489,13 @@ option smbcs: 262144
 option mbcgs: 10
 option acul: 0
 option as: bf
-mbcs blocks: 6 8 8
-mbcs blocks size: 220928 286552 286552
-mbcs carriers: 2 2 2
+mbcs blocks: 4 9 9
+mbcs blocks size: 358784 409568 409568
+mbcs carriers: 2 3 3
 mbcs mseg carriers: 2
 mbcs sys_alloc carriers: 0
-mbcs carriers size: 524288 524288 524288
-mbcs mseg carriers size: 524288
+mbcs carriers size: 1310720 1572864 1572864
+mbcs mseg carriers size: 1310720
 mbcs sys_alloc carriers size: 0
 sbcs blocks: 0 0 0
 sbcs blocks size: 0 0 0
@@ -1505,11 +1505,11 @@ sbcs sys_alloc carriers: 0
 sbcs carriers size: 0 0 0
 sbcs mseg carriers size: 0
 sbcs sys_alloc carriers size: 0
-binary_alloc calls: 27
-binary_free calls: 21
+binary_alloc calls: 29
+binary_free calls: 25
 binary_realloc calls: 0
-mseg_alloc calls: 2
-mseg_dealloc calls: 0
+mseg_alloc calls: 3
+mseg_dealloc calls: 1
 mseg_realloc calls: 0
 sys_alloc calls: 0
 sys_free calls: 0
@@ -1575,8 +1575,8 @@ option smbcs: 262144
 option mbcgs: 10
 option acul: 0
 option as: bf
-mbcs blocks: 9 13 13
-mbcs blocks size: 6648 7944 7944
+mbcs blocks: 7 12 12
+mbcs blocks size: 4536 7776 7776
 mbcs carriers: 1 1 1
 mbcs mseg carriers: 1
 mbcs sys_alloc carriers: 0
@@ -1591,8 +1591,8 @@ sbcs sys_alloc carriers: 0
 sbcs carriers size: 0 0 0
 sbcs mseg carriers size: 0
 sbcs sys_alloc carriers size: 0
-binary_alloc calls: 581
-binary_free calls: 572
+binary_alloc calls: 571
+binary_free calls: 564
 binary_realloc calls: 0
 mseg_alloc calls: 1
 mseg_dealloc calls: 0
@@ -1806,8 +1806,8 @@ sbcs sys_alloc carriers: 0
 sbcs carriers size: 0 0 0
 sbcs mseg carriers size: 0
 sbcs sys_alloc carriers size: 0
-driver_alloc calls: 1591
-driver_free calls: 1591
+driver_alloc calls: 1671
+driver_free calls: 1671
 driver_realloc calls: 0
 mseg_alloc calls: 1
 mseg_dealloc calls: 0
@@ -1909,14 +1909,14 @@ option mcs: 10
 memory kind: all memory
 cached_segments: 1
 cache_hits: 8
-segments: 44 45 45
-segments_size: 22020096 26214400 26214400
-segments_watermark: 45
-mseg_alloc calls: 53
+segments: 45 46 46
+segments_size: 27000832 27262976 27262976
+segments_watermark: 46
+mseg_alloc calls: 54
 mseg_dealloc calls: 9
 mseg_realloc calls: 0
-mseg_create calls: 45
-mseg_create_resize calls: 5
+mseg_create calls: 46
+mseg_create_resize calls: 4
 mseg_destroy calls: 0
 mseg_recreate calls: 0
 mseg_clear_cache calls: 0
@@ -1947,16 +1947,16 @@ option amcbf: 4194304
 option rmcbf: 20
 option mcs: 10
 memory kind: all memory
-cached_segments: 1
+cached_segments: 0
 cache_hits: 0
-segments: 0 1 1
-segments_size: 0 262144 262144
+segments: 1 1 1
+segments_size: 262144 262144 262144
 segments_watermark: 1
 mseg_alloc calls: 1
-mseg_dealloc calls: 1
+mseg_dealloc calls: 0
 mseg_realloc calls: 0
 mseg_create calls: 1
-mseg_create_resize calls: 0
+mseg_create_resize calls: 1
 mseg_destroy calls: 0
 mseg_recreate calls: 0
 mseg_clear_cache calls: 0
@@ -2014,14 +2014,14 @@ Name: init
 Spawned as: otp_ring0:start/2
 Last scheduled in for: erlang:bif_return_trap/1
 Spawned by: []
-Started: Fri Dec  5 15:11:48 2014
+Started: Mon Dec 15 13:15:18 2014
 Message queue length: 1
 Number of heap fragments: 0
 Heap fragment data: 0
-Reductions: 25156
+Reductions: 25198
 Stack+heap: 4185
 OldHeap: 610
-Heap unused: 15
+Heap unused: 37
 OldHeap unused: 43
 Memory: 39088
 Program counter: 0x0000000000873ae0 (unknown function)
@@ -2055,274 +2055,274 @@ Current size: 1464
 Module: prim_file
 Uniq: 114309672
 Index: 3
-Address: 0x00007f8b0fed4ce0
+Address: 0x00007f6b96f94ce0
 Refc: 1
 =fun
 Module: prim_file
 Uniq: 114309672
 Index: 2
-Address: 0x00007f8b0fed4d18
+Address: 0x00007f6b96f94d18
 Refc: 1
 =fun
 Module: prim_file
 Uniq: 114309672
 Index: 1
-Address: 0x00007f8b0fed4d50
+Address: 0x00007f6b96f94d50
 Refc: 1
 =fun
 Module: prim_file
 Uniq: 114309672
 Index: 0
-Address: 0x00007f8b0fed4d88
+Address: 0x00007f6b96f94d88
 Refc: 1
 =fun
 Module: prim_file
 Uniq: 114309672
 Index: 5
-Address: 0x00007f8b0fed4a38
+Address: 0x00007f6b96f94a38
 Refc: 1
 =fun
 Module: prim_file
 Uniq: 114309672
 Index: 4
-Address: 0x00007f8b0fed4b40
+Address: 0x00007f6b96f94b40
 Refc: 1
 =fun
 Module: init
 Uniq: 44948734
 Index: 8
-Address: 0x00007f8b109fa730
+Address: 0x00007f6b97afa738
 Refc: 1
 =fun
 Module: init
 Uniq: 44948734
 Index: 4
-Address: 0x00007f8b109faef0
+Address: 0x00007f6b97afaef8
 Refc: 1
 =fun
 Module: init
 Uniq: 44948734
 Index: 5
-Address: 0x00007f8b109faaf0
+Address: 0x00007f6b97afaaf8
 Refc: 1
 =fun
 Module: init
 Uniq: 44948734
 Index: 6
-Address: 0x00007f8b109fa7c0
+Address: 0x00007f6b97afa7c8
 Refc: 1
 =fun
 Module: init
 Uniq: 44948734
 Index: 7
-Address: 0x00007f8b109fa788
+Address: 0x00007f6b97afa790
 Refc: 1
 =fun
 Module: init
 Uniq: 44948734
 Index: 0
-Address: 0x00007f8b109fb140
+Address: 0x00007f6b97afb148
 Refc: 1
 =fun
 Module: init
 Uniq: 44948734
 Index: 1
-Address: 0x00007f8b109fb108
+Address: 0x00007f6b97afb110
 Refc: 1
 =fun
 Module: init
 Uniq: 44948734
 Index: 2
-Address: 0x00007f8b109fb0d0
+Address: 0x00007f6b97afb0d8
 Refc: 1
 =fun
 Module: init
 Uniq: 44948734
 Index: 3
-Address: 0x00007f8b109fb070
+Address: 0x00007f6b97afb078
 Refc: 1
 =fun
 Module: erlang
 Uniq: 8216733
 Index: 0
-Address: 0x00007f8b0ff20780
+Address: 0x00007f6b96fe0780
 Refc: 1
 =fun
 Module: prim_zip
 Uniq: 76810209
 Index: 1
-Address: 0x00007f8b0ff0c8c8
+Address: 0x00007f6b96fcc8c8
 Refc: 1
 =fun
 Module: prim_zip
 Uniq: 76810209
 Index: 0
-Address: 0x00007f8b0ff0c920
+Address: 0x00007f6b96fcc920
 Refc: 1
 =fun
 Module: prim_zip
 Uniq: 76810209
 Index: 3
-Address: 0x00007f8b0ff0c858
+Address: 0x00007f6b96fcc858
 Refc: 1
 =fun
 Module: prim_zip
 Uniq: 76810209
 Index: 2
-Address: 0x00007f8b0ff0c890
+Address: 0x00007f6b96fcc890
 Refc: 1
 =fun
 Module: prim_zip
 Uniq: 76810209
 Index: 5
-Address: 0x00007f8b0ff0c788
+Address: 0x00007f6b96fcc788
 Refc: 1
 =fun
 Module: prim_zip
 Uniq: 76810209
 Index: 4
-Address: 0x00007f8b0ff0c7e8
+Address: 0x00007f6b96fcc7e8
 Refc: 1
 =fun
 Module: prim_zip
 Uniq: 76810209
 Index: 6
-Address: 0x00007f8b0ff0c730
+Address: 0x00007f6b96fcc730
 Refc: 1
 =fun
 Module: erl_prim_loader
 Uniq: 59568795
 Index: 5
-Address: 0x00007f8b0ff40818
+Address: 0x00007f6b97000818
 Refc: 1
 =fun
 Module: erl_prim_loader
 Uniq: 59568795
 Index: 4
-Address: 0x00007f8b0ff40950
+Address: 0x00007f6b97000950
 Refc: 1
 =fun
 Module: erl_prim_loader
 Uniq: 59568795
 Index: 7
-Address: 0x00007f8b0ff40548
+Address: 0x00007f6b97000548
 Refc: 1
 =fun
 Module: erl_prim_loader
 Uniq: 59568795
 Index: 6
-Address: 0x00007f8b0ff406b0
+Address: 0x00007f6b970006b0
 Refc: 1
 =fun
 Module: erl_prim_loader
 Uniq: 59568795
 Index: 1
-Address: 0x00007f8b0ff40d98
+Address: 0x00007f6b97000d98
 Refc: 1
 =fun
 Module: erl_prim_loader
 Uniq: 59568795
 Index: 0
-Address: 0x00007f8b0ff40f10
+Address: 0x00007f6b97000f10
 Refc: 1
 =fun
 Module: erl_prim_loader
 Uniq: 59568795
 Index: 3
-Address: 0x00007f8b0ff40ac8
+Address: 0x00007f6b97000ac8
 Refc: 1
 =fun
 Module: erl_prim_loader
 Uniq: 59568795
 Index: 2
-Address: 0x00007f8b0ff40c30
+Address: 0x00007f6b97000c30
 Refc: 1
 =fun
 Module: erl_prim_loader
 Uniq: 59568795
 Index: 13
-Address: 0x00007f8b0ff3fd78
+Address: 0x00007f6b96fffd78
 Refc: 1
 =fun
 Module: erl_prim_loader
 Uniq: 59568795
 Index: 12
-Address: 0x00007f8b0ff3ff28
+Address: 0x00007f6b96ffff28
 Refc: 1
 =fun
 Module: erl_prim_loader
 Uniq: 59568795
 Index: 15
-Address: 0x00007f8b0ff3f568
+Address: 0x00007f6b96fff568
 Refc: 1
 =fun
 Module: erl_prim_loader
 Uniq: 59568795
 Index: 14
-Address: 0x00007f8b0ff3f7e8
+Address: 0x00007f6b96fff7e8
 Refc: 1
 =fun
 Module: erl_prim_loader
 Uniq: 59568795
 Index: 9
-Address: 0x00007f8b0ff40278
+Address: 0x00007f6b97000278
 Refc: 1
 =fun
 Module: erl_prim_loader
 Uniq: 59568795
 Index: 8
-Address: 0x00007f8b0ff403e0
+Address: 0x00007f6b970003e0
 Refc: 1
 =fun
 Module: erl_prim_loader
 Uniq: 59568795
 Index: 11
-Address: 0x00007f8b0ff3ffa8
+Address: 0x00007f6b96ffffa8
 Refc: 1
 =fun
 Module: erl_prim_loader
 Uniq: 59568795
 Index: 10
-Address: 0x00007f8b0ff40110
+Address: 0x00007f6b97000110
 Refc: 1
 =fun
 Module: erl_prim_loader
 Uniq: 59568795
 Index: 20
-Address: 0x00007f8b0ff3ed80
+Address: 0x00007f6b96ffed80
 Refc: 1
 =fun
 Module: erl_prim_loader
 Uniq: 59568795
 Index: 17
-Address: 0x00007f8b0ff3f148
+Address: 0x00007f6b96fff148
 Refc: 1
 =fun
 Module: erl_prim_loader
 Uniq: 59568795
 Index: 16
-Address: 0x00007f8b0ff3f178
+Address: 0x00007f6b96fff178
 Refc: 1
 =fun
 Module: erl_prim_loader
 Uniq: 59568795
 Index: 19
-Address: 0x00007f8b0ff3ef78
+Address: 0x00007f6b96ffef78
 Refc: 1
 =fun
 Module: erl_prim_loader
 Uniq: 59568795
 Index: 18
-Address: 0x00007f8b0ff3f110
+Address: 0x00007f6b96fff110
 Refc: 1
 =proc_messages:<0.0.0>
-H117C8850:N
+H94604B30:N
 =proc_stack:<0.0.0>
-0x00007f8b117cbe20:SReturn addr 0x109EE5E0 (init:boot_loop/2 + 2800)
-0x00007f8b117cbe28:SReturn addr 0x884E88 (<terminate process normally>)
+0x00007f6b94608318:SReturn addr 0x97AEE5E8 (init:boot_loop/2 + 2800)
+0x00007f6b94608320:SReturn addr 0x884E88 (<terminate process normally>)
 y0:P<0.2.0>
 =proc_heap:<0.0.0>
-117C8850:t3:A4:EXIT,P<0.2.0>,A6:killed
+94604B30:t3:A4:EXIT,P<0.2.0>,A6:killed
 =atoms
 'Argument__1'
 'Argument__2'
@@ -2331,6 +2331,739 @@ y0:P<0.2.0>
 'Argument__5'
 'Argument__6'
 'no -shutdown_time flag'
+'-print/8-fun-0-'
+indent
+while_fail
+last_depth
+cind_element
+cind_tail
+cind_list
+cind_rec
+cind_field
+cind_fields_tail
+cind_record
+no_good
+cind_tag_tuple
+cind
+printable_char
+printable_unicode
+valid_utf8
+printable_bin1
+printable_bin
+list_length_tail
+list_length
+print_length_list1
+print_length_list
+print_length_field
+print_length_fields
+print_length_record
+print_length_tuple
+print_length
+write_list
+write_field
+write_fields_tail
+write_fields
+pp_binary
+pp_element
+pp_tail
+pp_list
+rec_indent
+field
+pp_field
+pp_fields_tail
+dots
+pp_record
+pp_tag_tuple
+pp
+max_cs
+record_print_fun
+no_fun
+max_chars
+'-fwrite_g/1-lc$^0/1-0-'
+'-fwrite_g/1-lc$^1/1-1-'
+lowercase
+cond_lowercase
+flat_trunc
+adjust
+prefixed_integer
+unprefixed_integer
+string_field
+cdata_to_chars
+iolist_to_chars
+log2floor
+int_pow
+int_ceil
+insert_exp
+insert_decimal
+fixup
+scale
+fwrite_g_1
+mantissa_exponent
+float_data
+float_f
+fwrite_f
+float_exp
+chars
+float_man
+float_e
+fwrite_e
+uniconv
+decr_pc
+build
+pcount
+collect_cc
+pad_char
+field_value
+precision
+right
+left
+field_width
+strings
+collect_cseq
+binrev
+get_until
+collect_line_list
+collect_line_bin
+collect_line1
+collect_line
+collect_chars_list
+collect_chars1
+collect_chars
+cafu
+count_and_find_utf8
+printable_unicode_list
+printable_latin1_list
+deep_unicode_char_list
+deep_latin1_char_list
+char_list
+latin1_char_list
+write_char_as_latin1
+write_latin1_char
+write_unicode_char
+string_char
+write_string1
+unicode_as_latin1
+write_string_as_latin1
+write_latin1_string
+write_unicode_string
+unicode_as_unicode
+name_char
+name_chars
+quote_atom
+write_atom
+write_binary_body
+write_binary
+write_ref
+write_port
+write_tail
+fwrite_g
+add_modifier
+do_format_prompt
+format_prompt
+indentation
+fread
+'./erl_parse.erl'
+'/net/isildur/ldisk/daily_build/r16b02_prebuild_opu_o.2013-09-16_20/otp_src_R16B02/bootstrap/lib/parsetools/include/yeccpre.hrl'
+'erl_parse.yrl'
+'-build_typed_attribute/2-fun-0-'
+'-attribute_farity_list/1-lc$^0/1-0-'
+'-has_undefined/1-fun-0-'
+'-check_clauses/3-fun-0-'
+'-normalise/1-fun-0-'
+'-abstract/3-lc$^0/1-0-'
+yeccgoto_typed_record_fields
+yeccgoto_typed_exprs
+yeccgoto_typed_expr
+yeccgoto_typed_attr_val
+yeccgoto_type_spec
+yeccgoto_type_sigs
+yeccgoto_type_sig
+yeccgoto_type_guards
+yeccgoto_type_guard
+yeccgoto_type_500
+yeccgoto_type_400
+yeccgoto_type_300
+yeccgoto_type_200
+yeccgoto_type
+yeccgoto_tuple
+yeccgoto_try_expr
+yeccgoto_try_clauses
+yeccgoto_try_clause
+yeccgoto_try_catch
+yeccgoto_top_types
+yeccgoto_top_type_100
+yeccgoto_top_type
+yeccgoto_tail
+yeccgoto_strings
+yeccgoto_spec_fun
+yeccgoto_rule_clauses
+yeccgoto_rule_clause
+yeccgoto_rule_body
+yeccgoto_rule
+yeccgoto_record_tuple
+yeccgoto_record_fields
+yeccgoto_record_field
+yeccgoto_record_expr
+yeccgoto_receive_expr
+yeccgoto_prefix_op
+yeccgoto_opt_bit_type_list
+yeccgoto_opt_bit_size_expr
+yeccgoto_mult_op
+yeccgoto_list_op
+yeccgoto_list_comprehension
+yeccgoto_list
+yeccgoto_lc_exprs
+yeccgoto_lc_expr
+yeccgoto_integer_or_var
+yeccgoto_if_expr
+yeccgoto_if_clauses
+yeccgoto_if_clause
+yeccgoto_guard
+yeccgoto_function_clauses
+yeccgoto_function_clause
+yeccgoto_function_call
+yeccgoto_function
+yeccgoto_fun_type_100
+yeccgoto_fun_type
+yeccgoto_fun_expr
+yeccgoto_fun_clauses
+yeccgoto_fun_clause
+yeccgoto_form
+yeccgoto_field_types
+yeccgoto_field_type
+yeccgoto_exprs
+yeccgoto_expr_max
+yeccgoto_expr_800
+yeccgoto_expr_700
+yeccgoto_expr_600
+yeccgoto_expr_500
+yeccgoto_expr_400
+yeccgoto_expr_300
+yeccgoto_expr_200
+yeccgoto_expr_160
+yeccgoto_expr_150
+yeccgoto_expr_100
+yeccgoto_expr
+yeccgoto_cr_clauses
+yeccgoto_cr_clause
+yeccgoto_comp_op
+yeccgoto_clause_guard
+yeccgoto_clause_body
+yeccgoto_clause_args
+yeccgoto_case_expr
+yeccgoto_bit_type_list
+yeccgoto_bit_type
+yeccgoto_bit_size_expr
+yeccgoto_bit_expr
+yeccgoto_binary_type
+yeccgoto_binary_comprehension
+yeccgoto_binary
+yeccgoto_bin_unit_type
+yeccgoto_bin_elements
+yeccgoto_bin_element
+yeccgoto_bin_base_type
+yeccgoto_attribute
+yeccgoto_attr_val
+yeccgoto_atomic
+yeccgoto_atom_or_var
+yeccgoto_argument_list
+yeccgoto_add_op
+yeccpars2_460
+yeccpars2_459
+yeccpars2_457
+yeccpars2_456
+yeccpars2_455
+yeccpars2_453
+yeccpars2_451
+yeccpars2_450
+yeccpars2_449
+yeccpars2_448
+yeccpars2_447
+yeccpars2_445
+yeccpars2_444
+yeccpars2_443
+yeccpars2_442
+yeccpars2_441
+yeccpars2_439
+yeccpars2_438
+yeccpars2_435
+yeccpars2_434
+yeccpars2_433
+yeccpars2_431
+yeccpars2_430
+yeccpars2_429
+yeccpars2_427
+yeccpars2_426
+yeccpars2_425
+yeccpars2_423
+yeccpars2_422
+yeccpars2_421
+yeccpars2_420
+yeccpars2_419
+yeccpars2_418
+yeccpars2_417
+yeccpars2_415
+yeccpars2_413
+yeccpars2_412
+yeccpars2_410
+yeccpars2_408
+yeccpars2_407
+yeccpars2_406
+yeccpars2_405
+yeccpars2_404
+yeccpars2_403
+yeccpars2_401
+range
+yeccpars2_400
+yeccpars2_397
+yeccpars2_395
+yeccpars2_393
+yeccpars2_392
+yeccpars2_390
+yeccpars2_389
+yeccpars2_388
+yeccpars2_387
+field_type
+yeccpars2_386
+yeccpars2_384
+yeccpars2_383
+yeccpars2_382
+yeccpars2_381
+yeccpars2_380
+yeccpars2_379
+yeccpars2_378
+yeccpars2_377
+yeccpars2_376
+yeccpars2_374
+yeccpars2_373
+yeccpars2_372
+yeccpars2_371
+yeccpars2_370
+yeccpars2_369
+yeccpars2_368
+yeccpars2_367
+yeccpars2_366
+yeccpars2_364
+yeccpars2_363
+yeccpars2_362
+yeccpars2_361
+yeccpars2_360
+yeccpars2_359
+yeccpars2_358
+nonempty_list
+yeccpars2_357
+yeccpars2_356
+yeccpars2_355
+yeccpars2_354
+yeccpars2_353
+yeccpars2_352
+yeccpars2_351
+yeccpars2_350
+yeccpars2_349
+yeccpars2_348
+remote_type
+yeccpars2_347
+yeccpars2_346
+yeccpars2_345
+yeccpars2_344
+yeccpars2_343
+yeccpars2_342
+yeccpars2_341
+yeccpars2_340
+yeccpars2_338
+yeccpars2_337
+yeccpars2_336
+yeccpars2_335
+yeccpars2_334
+yeccpars2_333
+yeccpars2_332
+yeccpars2_331
+yeccpars2_330
+yeccpars2_329
+yeccpars2_328
+yeccpars2_327
+yeccpars2_326
+yeccpars2_325
+yeccpars2_324
+yeccpars2_323
+yeccpars2_322
+yeccpars2_321
+yeccpars2_320
+yeccpars2_319
+yeccpars2_318
+yeccpars2_317
+yeccpars2_316
+yeccpars2_315
+yeccpars2_314
+yeccpars2_313
+yeccpars2_312
+yeccpars2_311
+yeccpars2_310
+yeccpars2_309
+yeccpars2_308
+yeccpars2_307
+yeccpars2_306
+yeccpars2_cont_305
+yeccpars2_305
+yeccpars2_304
+yeccpars2_303
+yeccpars2_302
+yeccpars2_300
+yeccpars2_299
+yeccpars2_298
+yeccpars2_297
+yeccpars2_296
+yeccpars2_295
+yeccpars2_294
+yeccpars2_293
+yeccpars2_292
+yeccpars2_291
+yeccpars2_290
+yeccpars2_289
+yeccpars2_287
+yeccpars2_286
+yeccpars2_285
+yeccpars2_283
+yeccpars2_282
+yeccpars2_281
+yeccpars2_280
+yeccpars2_279
+yeccpars2_278
+yeccpars2_277
+yeccpars2_276
+yeccpars2_275
+yeccpars2_274
+yeccpars2_273
+yeccpars2_272
+yeccpars2_271
+yeccpars2_270
+remote
+yeccpars2_269
+yeccpars2_267
+yeccpars2_266
+yeccpars2_265
+yeccpars2_264
+yeccpars2_263
+yeccpars2_262
+yeccpars2_261
+yeccpars2_260
+yeccpars2_259
+yeccpars2_258
+yeccpars2_256
+yeccpars2_255
+yeccpars2_254
+yeccpars2_253
+yeccpars2_252
+yeccpars2_251
+yeccpars2_250
+yeccpars2_249
+yeccpars2_248
+yeccpars2_247
+yeccpars2_246
+yeccpars2_243
+yeccpars2_242
+yeccpars2_241
+yeccpars2_240
+yeccpars2_239
+yeccpars2_238
+yeccpars2_237
+yeccpars2_236
+yeccpars2_235
+yeccpars2_233
+yeccpars2_231
+yeccpars2_229
+yeccpars2_228
+yeccpars2_226
+yeccpars2_225
+record_index
+yeccpars2_223
+yeccpars2_222
+yeccpars2_221
+yeccpars2_220
+yeccpars2_219
+yeccpars2_217
+yeccpars2_215
+yeccpars2_214
+yeccpars2_213
+yeccpars2_212
+yeccpars2_211
+yeccpars2_210
+yeccpars2_209
+yeccpars2_208
+yeccpars2_207
+yeccpars2_206
+yeccpars2_205
+yeccpars2_204
+yeccpars2_203
+yeccpars2_201
+yeccpars2_200
+yeccpars2_199
+yeccpars2_198
+yeccpars2_197
+yeccpars2_196
+yeccpars2_195
+yeccpars2_194
+yeccpars2_193
+yeccpars2_191
+bc
+yeccpars2_190
+yeccpars2_189
+yeccpars2_187
+yeccpars2_186
+yeccpars2_185
+yeccpars2_184
+yeccpars2_183
+yeccpars2_182
+yeccpars2_181
+yeccpars2_180
+yeccpars2_179
+yeccpars2_178
+yeccpars2_177
+yeccpars2_176
+yeccpars2_175
+yeccpars2_174
+lc
+yeccpars2_173
+yeccpars2_172
+generate
+yeccpars2_170
+b_generate
+yeccpars2_168
+yeccpars2_166
+yeccpars2_165
+yeccpars2_164
+yeccpars2_163
+yeccpars2_160
+yeccpars2_158
+yeccpars2_157
+yeccpars2_156
+yeccpars2_155
+yeccpars2_154
+yeccpars2_153
+yeccpars2_152
+yeccpars2_150
+yeccpars2_149
+yeccpars2_148
+yeccpars2_147
+yeccpars2_145
+yeccpars2_144
+yeccpars2_143
+yeccpars2_142
+yeccpars2_141
+yeccpars2_140
+yeccpars2_139
+yeccpars2_138
+yeccpars2_136
+yeccpars2_135
+yeccpars2_134
+yeccpars2_133
+yeccpars2_132
+yeccpars2_131
+yeccpars2_130
+yeccpars2_129
+yeccpars2_128
+yeccpars2_127
+yeccpars2_125
+yeccpars2_123
+yeccpars2_122
+yeccpars2_121
+yeccpars2_120
+yeccpars2_118
+yeccpars2_116
+yeccpars2_115
+yeccpars2_112
+yeccpars2_111
+yeccpars2_110
+yeccpars2_109
+yeccpars2_108
+yeccpars2_107
+yeccpars2_106
+yeccpars2_104
+yeccpars2_102
+yeccpars2_100
+yeccpars2_98
+yeccpars2_96
+yeccpars2_94
+yeccpars2_92
+yeccpars2_91
+yeccpars2_90
+yeccpars2_89
+yeccpars2_88
+yeccpars2_87
+yeccpars2_85
+yeccpars2_84
+yeccpars2_82
+yeccpars2_81
+yeccpars2_79
+yeccpars2_78
+yeccpars2_77
+yeccpars2_75
+yeccpars2_74
+yeccpars2_73
+yeccpars2_71
+yeccpars2_69
+yeccpars2_68
+yeccpars2_67
+yeccpars2_66
+yeccpars2_65
+yeccpars2_64
+yeccpars2_63
+yeccpars2_61
+yeccpars2_60
+yeccpars2_59
+yeccpars2_58
+yeccpars2_56
+yeccpars2_55
+yeccpars2_54
+yeccpars2_51
+yeccpars2_49
+yeccpars2_48
+yeccpars2_47
+yeccpars2_46
+yeccpars2_45
+yeccpars2_44
+yeccpars2_43
+yeccpars2_42
+yeccpars2_41
+yeccpars2_40
+yeccpars2_39
+yeccpars2_38
+yeccpars2_37
+yeccpars2_36
+yeccpars2_35
+yeccpars2_34
+yeccpars2_33
+yeccpars2_32
+yeccpars2_31
+yeccpars2_30
+yeccpars2_29
+yeccpars2_28
+yeccpars2_27
+yeccpars2_26
+yeccpars2_25
+yeccpars2_24
+yeccpars2_23
+yeccpars2_22
+yeccpars2_21
+yeccpars2_20
+yeccpars2_19
+yeccpars2_18
+yeccpars2_17
+yeccpars2_16
+yeccpars2_15
+yeccpars2_14
+yeccpars2_cont_13
+yeccpars2_13
+yeccpars2_12
+yeccpars2_11
+yeccpars2_10
+yeccpars2_9
+yeccpars2_8
+yeccpars2_7
+yeccpars2_6
+yeccpars2_5
+yeccpars2_4
+yeccpars2_3
+yeccpars2_2
+yeccpars2_1
+yeccpars2_0
+missing_state_in_action_table
+yeccpars2
+reserved_symbol
+yecctoken2string
+yecctoken_location
+yecctoken_to_string
+yeccerror
+yecctoken_end_location
+yecc_end
+'$end'
+no_func
+yeccpars1
+missing_in_goto_table
+state_is_unknown
+yecc_error_type
+yecc_bug
+yeccpars0
+return_error
+deep_char_list
+no_line
+parse_and_scan
+parse
+get_attributes
+get_attribute
+set_line
+max_prec
+func_prec
+preop_prec
+inop_prec
+tokens_tuple
+tokens_tail
+bin_element
+abstract_byte
+abstract_list
+not_string
+abstract_unicode_string
+abstract_string
+normalise_list
+expr_grp
+bin
+normalise
+mapl
+ret_err
+build_try
+check_clauses
+clauses
+build_fun
+rule
+build_rule
+build_function
+maybe_add_paren
+ann_type
+has_undefined
+record_field
+record_fields
+record_tuple
+farity_list
+error_bad_decl
+attribute_farity_list
+op
+attribute_farity
+var_list
+export
+import
+build_attribute
+build_bin_type
+build_gen_type
+paren_type
+skip_paren
+union
+lift_unions
+constraint
+is_subtype
+build_def
+product
+bounded_fun
+find_arity_from_specs
+build_type_spec
+opaque
+type_def
+typed_record
+build_typed_attribute
+clause
+f
+callback
+spec
+host
+riak1
+riak_nodes
+account2
+access_token_secret
+access_token
+api_secret
+api_key
+account1
+twitter_accounts
+twitterminer
 character
 '-tokens/4-fun-0-'
 '-tokens/4-fun-1-'
@@ -2376,6 +3109,7 @@ let
 of
 catch
 when
+reserved_word
 tabs
 nl_tabs
 spcs
@@ -2404,6 +3138,7 @@ scan_qatom
 char_error
 substr
 scan_string
+nl
 scan_char
 scan_white_space
 skip_white_space
@@ -2451,10 +3186,41 @@ opts
 return_white_spaces
 return_comments
 string_thing
+column
 category
 continuation_location
 erl_scan_continuation
 no_col
+base
+'-compact/1-lc$^0/1-0-'
+'-substitute_aliases/2-lc$^0/1-0-'
+'-substitute_negations/2-lc$^0/1-0-'
+'-expand/2-lc$^0/1-0-'
+'-split/2-lc$^0/1-0-'
+'-split/2-lc$^1/1-1-'
+fetch
+dict_prepend
+is_key
+aliases
+negations
+key_uniq_1
+key_uniq
+expand_3
+expand_2
+expand_1
+expand_0
+expand
+substitute_negations_1
+substitute_negations
+substitute_aliases_1
+substitute_aliases
+add_element
+get_bool
+append_values
+get_all_values
+lookup_all
+unfold
+property
 'FILE'
 'MODULE'
 'MODULE_STRING'
@@ -2492,6 +3258,9 @@ wait_epp_reply
 epp_reply
 stringify
 stringify1
+write_char
+write_string
+char
 token_src
 expand_arg
 expand_macro
@@ -2569,8 +3338,10 @@ enter_file
 wait_req_skip
 wait_req_scan
 close_file
+fwrite
 epp_request
 wait_request
+store
 abstract
 find
 user_predef
@@ -2592,6 +3363,7 @@ com_nl
 reader
 read_encoding_from_file
 fake_reader
+encoding
 set_encoding
 in_comment_only
 read_encoding
@@ -2615,179 +3387,6 @@ macro_defs
 parse_form
 parse_erl_form
 scan_erl_form
-'-compact/1-lc$^0/1-0-'
-'-substitute_aliases/2-lc$^0/1-0-'
-'-substitute_negations/2-lc$^0/1-0-'
-'-expand/2-lc$^0/1-0-'
-'-split/2-lc$^0/1-0-'
-'-split/2-lc$^1/1-1-'
-store
-fetch
-dict_prepend
-is_key
-aliases
-negations
-key_uniq_1
-key_uniq
-expand_3
-expand_2
-expand_1
-expand_0
-expand
-substitute_negations_1
-substitute_negations
-substitute_aliases_1
-substitute_aliases
-add_element
-get_bool
-append_values
-get_all_values
-lookup_all
-unfold
-property
-'-print/8-fun-0-'
-indent
-while_fail
-last_depth
-cind_element
-cind_tail
-cind_list
-cind_rec
-cind_field
-cind_fields_tail
-cind_record
-no_good
-cind_tag_tuple
-cind
-printable_char
-printable_unicode
-valid_utf8
-printable_bin1
-printable_bin
-list_length_tail
-list_length
-print_length_list1
-print_length_list
-print_length_field
-print_length_fields
-print_length_record
-print_length_tuple
-print_length
-write_list
-write_field
-write_fields_tail
-write_fields
-pp_binary
-pp_element
-pp_tail
-pp_list
-rec_indent
-field
-pp_field
-pp_fields_tail
-dots
-pp_record
-pp_tag_tuple
-bin
-pp
-max_cs
-record_print_fun
-no_fun
-max_chars
-'-fwrite_g/1-lc$^0/1-0-'
-'-fwrite_g/1-lc$^1/1-1-'
-lowercase
-cond_lowercase
-flat_trunc
-adjust
-char
-prefixed_integer
-unprefixed_integer
-string_field
-cdata_to_chars
-iolist_to_chars
-log2floor
-int_pow
-int_ceil
-insert_exp
-insert_decimal
-generate
-fixup
-scale
-fwrite_g_1
-mantissa_exponent
-float_data
-float_f
-fwrite_f
-float_exp
-chars
-float_man
-float_e
-fwrite_e
-column
-base
-uniconv
-decr_pc
-build
-pcount
-collect_cc
-pad_char
-field_value
-precision
-right
-left
-field_width
-strings
-encoding
-collect_cseq
-binrev
-get_until
-collect_line_list
-collect_line_bin
-collect_line1
-collect_line
-collect_chars_list
-collect_chars1
-collect_chars
-cafu
-count_and_find_utf8
-nl
-printable_unicode_list
-printable_latin1_list
-deep_unicode_char_list
-deep_char_list
-deep_latin1_char_list
-char_list
-latin1_char_list
-write_char_as_latin1
-write_latin1_char
-write_unicode_char
-write_char
-string_char
-write_string1
-unicode_as_latin1
-write_string_as_latin1
-write_latin1_string
-write_unicode_string
-unicode_as_unicode
-write_string
-name_char
-name_chars
-reserved_word
-quote_atom
-write_atom
-write_binary_body
-write_binary
-write_ref
-write_port
-write_tail
-fwrite_g
-add_modifier
-do_format_prompt
-format_prompt
-indentation
-fread
-fwrite
 '-unix_cmd/1-fun-0-'
 '-start_port/0-fun-0-'
 validate1

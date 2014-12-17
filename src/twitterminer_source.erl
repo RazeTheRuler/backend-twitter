@@ -89,6 +89,7 @@ receive_tweets({init, URL, Keys, Track}) ->
   % be a good idea to handle them somehow (or at least log).
   SignedParams = oauth:sign("GET", URL, [{delimited, length},
     {stall_warnings, true}, Track], Consumer, AccessToken, AccessTokenSecret),
+  
 
   % We use stream_to self() to get the HTTP stream delivered to our process as individual messages.
   % We send the authentication parameters encoded in URI. I tried putting them in HTTP
@@ -184,7 +185,7 @@ split_transformer() ->
 % Get HTTP chunks and reassemble them into chunks that we get
 % as a result of specifying delimited=length.
 % https://dev.twitter.com/streaming/overview/processing
-split_loop(Sink, Sender, Buffer) ->
+split_loop(Sink, Sender, Buffer) -> 
   case pop_size(Buffer) of
     {size, N, Rest} ->
       case buffer_pop_n(Rest, N, Sender) of
@@ -196,6 +197,7 @@ split_loop(Sink, Sender, Buffer) ->
         {terminate, _Chunk}    -> Sink ! terminate;
         {error, Reason, Chunk} -> Sink ! {error, {Reason, Chunk}}
       end;
+
     {more, L} ->
       case buffer_pop_n(Buffer, L, Sender) of
         {pop, Chunk, NewBuf}   ->
@@ -205,7 +207,8 @@ split_loop(Sink, Sender, Buffer) ->
         {terminate, _Chunk}    -> Sink ! terminate;
         {error, Reason, Chunk} -> Sink ! {error, {Reason, Chunk}}
       end
-  end.
+  end.     %%%%%%Continue here
+
 
 % Get a chunk of N bytes from the buffer. If there is not enough data
 % in the buffer, get more messages from the pipeline.
@@ -227,11 +230,21 @@ buffer_pop_n(B, N, Sender) ->
 % We should also support discarding \r\n here
 % (see 'blank lines' in https://dev.twitter.com/streaming/overview/messages-types)
 pop_size(<<>>) -> {more, 1};
+
+
+
 pop_size(<<A,Rest/binary>>) when A >= $0, A =< $9 ->
-  pop_size((A - $0), 1, Rest).
+  pop_size((A - $0), 1, Rest).  
+
+ 
 
 pop_size(_N, L, <<>>) -> {more, L+1};
+
 pop_size(_N, L, <<"\r">>) -> {more, L+2};
+
 pop_size(N, L, <<A,Rest/binary>>) when A >= $0, A =< $9 ->
   pop_size(N * 10 + (A - $0), L+1, Rest);
+
+
+
 pop_size(N, _L, <<"\r\n",Rest/binary>>) -> {size, N, Rest}.

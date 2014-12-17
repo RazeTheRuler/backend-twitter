@@ -1,6 +1,5 @@
 -module(twitterminer_pipeline).
-
--export([build_link/1, terminate/1, join/1, consumer/2, map/1, raw_transformer/1, producer/2]).
+-export([build_link/1, terminate/1, join/1, consumer/3, map/1, raw_transformer/1, producer/2, counter_loop/2, init/1]).
 
 % @doc Build a pipeline and run it, returning a handle to it. A pipeline is a list of stages
 % built 'backwards' - producer is the last element, and consumer is the first one. The pipeline
@@ -12,6 +11,10 @@ build_link(Stages) ->
   receive
     {first_process, Ref, F} -> {P, F, Ref}
   end.
+
+
+
+
 
 build_aux(S, Ref, [{consumer, C}|Stages]) ->
   CP = spawn_link(fun () ->
@@ -51,23 +54,31 @@ join({P, _F, Ref}) ->
     {answer, Ref, Res} -> Res
   end.
 
-consumer_loop(P, Sink, Sender, State) ->
-  Sender ! next,
+consumer_loop(P, Sink, Sender, State, Spawn) ->  
+  Sender ! next, 
   receive
-    {message, Msg} ->
+    {message, Msg} -> Spawn ! {self(), counter, Msg}, 
       NewState = P (Msg, State),
-      consumer_loop(P, Sink, Sender, NewState);
+      consumer_loop(P, Sink, Sender, NewState, Spawn);
     finished -> Sink ! {answer, {ok, State}};
-    terminate   -> Sink ! {answer, {terminate, State}};
+    terminate   ->  Spawn ! {self(), done}, 
+    Sink ! {answer, {terminate, State}};
     {error, Reason} -> Sink ! {answer, {error, Reason, State}}
   end.
 
+counter_loop(Count, Category) ->                 %Puts every tweet in a list
+receive {_From, counter, MSG} -> counter_loop(Count ++ [MSG], Category);
+        {_From, done} -> io:format("Category ~p received ~p new tweets this stream.~n", [Category, twitterminer_riak:count_tweets(Count)]) end.
+
+init(Category) -> counter_loop([], Category).
+
+
 % @doc Create a consumer stage of the pipeline. Consumer function must
 % support the interface imposed by consumer_loop/4.
-consumer(P, I) ->
+consumer(P, I, Category) -> Spawn = spawn(twitterminer_pipeline, init, [Category]), 
   {consumer,
     fun (AnswerTo, Sender) ->
-        consumer_loop(P, AnswerTo, Sender, I) end}.
+        consumer_loop(P, AnswerTo, Sender, I, Spawn) end}.
 
 map_loop(F, Sink, Sender) ->
   Sender ! next,
