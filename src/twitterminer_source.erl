@@ -230,21 +230,10 @@ buffer_pop_n(B, N, Sender) ->
 % We should also support discarding \r\n here
 % (see 'blank lines' in https://dev.twitter.com/streaming/overview/messages-types)
 pop_size(<<>>) -> {more, 1};
-
-
-
 pop_size(<<A,Rest/binary>>) when A >= $0, A =< $9 ->
-  pop_size((A - $0), 1, Rest).  
-
- 
-
+  pop_size((A - $0), 1, Rest).   
 pop_size(_N, L, <<>>) -> {more, L+1};
-
 pop_size(_N, L, <<"\r">>) -> {more, L+2};
-
 pop_size(N, L, <<A,Rest/binary>>) when A >= $0, A =< $9 ->
   pop_size(N * 10 + (A - $0), L+1, Rest);
-
-
-
 pop_size(N, _L, <<"\r\n",Rest/binary>>) -> {size, N, Rest}.
