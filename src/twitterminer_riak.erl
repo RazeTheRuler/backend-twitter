@@ -64,8 +64,9 @@ gather_concurrent() ->
             spawn(twitterminer_riak, start_stream, [{vanstern, account5}, {track, "vänstern, kommunism, vänsterpartiet, ungvänster, vansterpartiet"}]),
             spawn(twitterminer_riak, start_stream, [{folkpartiet, account5}, {track, "folkpartiet, jan björklund, skolan"}]),
             spawn(twitterminer_riak, start_stream, [{feminism, account4}, {track, "schyman, feminist, feministiskt initiativ"}]),
-            spawn(twitterminer_riak, start_stream, [{centerpartiet, account4}, {track, "centerpartiet, annie lööf"}]).
-
+            spawn(twitterminer_riak, start_stream, [{centerpartiet, account4}, {track, "centerpartiet, annie lööf"}]),
+timer:sleep(300000),
+gather_concurrent().
 
 
 gather_tweets() ->  
@@ -121,16 +122,16 @@ sort_list( Category_list, Id_list)->
 
              %%Example of using the sorting part concurrency.
 
-          tryPurge() -> spawn(twitterminer_riak, concurrent_purge, [account4, index, 20]),
-            spawn(twitterminer_riak, concurrent_purge, [account1, sosse, 20]), 
-            spawn(twitterminer_riak, concurrent_purge, [account2, moderaterna, 20]),
-            spawn(twitterminer_riak, concurrent_purge, [account6, sd, 20]),
-            spawn(twitterminer_riak, concurrent_purge, [account1, miljopartiet, 20]),
-            spawn(twitterminer_riak, concurrent_purge, [account2, kristdemokraterna, 20]),
-            spawn(twitterminer_riak, concurrent_purge, [account6, vanstern, 20]),
-            spawn(twitterminer_riak, concurrent_purge, [account5, folkpartiet, 20]),
-            spawn(twitterminer_riak, concurrent_purge, [account5, feminism, 20]),
-            spawn(twitterminer_riak, concurrent_purge, [account4, centerpartiet, 20]).
+          tryPurge() -> spawn(twitterminer_riak, concurrent_purge, [account4, index, 1]),
+            spawn(twitterminer_riak, concurrent_purge, [account1, sosse, 1]), 
+            spawn(twitterminer_riak, concurrent_purge, [account2, moderaterna, 1]),
+            spawn(twitterminer_riak, concurrent_purge, [account6, sd, 1]),
+            spawn(twitterminer_riak, concurrent_purge, [account1, miljopartiet, 1]),
+            spawn(twitterminer_riak, concurrent_purge, [account2, kristdemokraterna, 1]),
+            spawn(twitterminer_riak, concurrent_purge, [account6, vanstern, 1]),
+            spawn(twitterminer_riak, concurrent_purge, [account5, folkpartiet, 1]),
+            spawn(twitterminer_riak, concurrent_purge, [account5, feminism, 1]),
+            spawn(twitterminer_riak, concurrent_purge, [account4, centerpartiet, 1]).
 
 
 
