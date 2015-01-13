@@ -1,13 +1,11 @@
 -module(twitterminer_riak).
 
--export([start_stream/2, twitter_save_pipeline/5, get_riak_hostport/1
-
-
-	, map_reduce/0, print/1, gather_tweets/0, counter_loop/4, init/1, count_tweets/1, tryPurge/0, gather_concurrent/0, delete_all_in_bucket/3, concurrent_mapreduce/3]).  
+-export([start_stream/2, twitter_save_pipeline/5, get_riak_hostport/1, reduce/0, print/1, gather_tweets/0, counter_loop/4, init/1, reduce_tweets/1, tryPurge/0, gather_concurrent/0, delete_all_in_bucket/3, concurrent_reduce/3]).  
 
 -record(hostport, {host, port}). 
 -record(account_keys, {api_key, api_secret,
                        access_token, access_token_secret}).
+
 
 
 
@@ -68,6 +66,7 @@ gather_concurrent() ->
 timer:sleep(300000),
 gather_concurrent().
 
+%Non-concurrent streaming. 
 
 gather_tweets() ->  
 Trackers = [{{index, account1}, {track, "svpol, nyval, extraval, omval, migpol"}}, {{sosse, account2}, {track, "socialdemokraterna, löfven"}}, 
@@ -95,7 +94,7 @@ twitter_save_pipeline(Pid, URL, Keys, Category, Track) ->
     twitterminer_source:split_transformer(),
     Prod].
 
-% We save only objects that have ids. 
+% Save tweets to riak. 
 save_tweet({Category, Pid}, {parsed_tweet, _L, Body, {id, Id}}) ->
 Self= self(), 
   Obj = riakc_obj:new(binary(Category), list_to_binary(integer_to_list(Id)), Body), io:format("Tweet saved with ID: ~p Category = ~p, Pid = ~p~n", [Id, Category, Self]),
@@ -105,55 +104,24 @@ save_tweet(_, _) -> io:format("save_tweet did not match: ~n", []).
 
 
   
-
+%Put tags around category.
 binary(Category) ->
 list_to_binary(atom_to_list(Category)).
 
 
-check_id(C, Id) ->
+zip_id(C, Id) ->
     {C, Id}.
 
+%Assigns the category name to the respective tweet ids. 
 sort_list( Category_list, Id_list)->
 
     Zip = lists:zip(Category_list, Id_list),
-    Res = lists:map(fun({C, Ids}) -> [check_id( C, Id) || Id <- Ids] end, Zip),
+    Res = lists:map(fun({C, Ids}) -> [zip_id( C, Id) || Id <- Ids] end, Zip),
     lists:flatten(Res).
 
+%Creates a list of all keys in all our default updates and the executes update_tweet for everyone to filter for popular tweets. 
 
-             %%Example of using the sorting part concurrency.
-
-          tryPurge() -> spawn(twitterminer_riak, concurrent_mapreduce, [account4, index, 1]),
-            spawn(twitterminer_riak, concurrent_mapreduce, [account1, sosse, 1]), 
-            spawn(twitterminer_riak, concurrent_mapreduce, [account2, moderaterna, 1]),
-            spawn(twitterminer_riak, concurrent_mapreduce, [account6, sd, 1]),
-            spawn(twitterminer_riak, concurrent_mapreduce, [account1, miljopartiet, 1]),
-            spawn(twitterminer_riak, concurrent_mapreduce, [account2, kristdemokraterna, 1]),
-            spawn(twitterminer_riak, concurrent_mapreduce, [account6, vanstern, 1]),
-            spawn(twitterminer_riak, concurrent_mapreduce, [account5, folkpartiet, 1]),
-            spawn(twitterminer_riak, concurrent_mapreduce, [account5, feminism, 1]),
-            spawn(twitterminer_riak, concurrent_mapreduce, [account4, centerpartiet, 1]).
-
-
-
-
-concurrent_mapreduce(Account, Bucket, Constraint) ->
-
-Spawn = spawn(twitterminer_riak, init, [Bucket]), 
-
-RHP = get_riak_hostport(riak1),
-  {ok, Pid} = riakc_pb_socket:start_link(RHP#hostport.host, RHP#hostport.port),
-
-Key_list = riakc_pb_socket:list_keys(Pid, binary(Bucket)), Filtered = element(2, Key_list),
-
-
-[update_tweet(Pid, Constraint, Spawn, {{Account, Bucket}, list_to_integer(binary_to_list(X))}) || X <- Filtered], Spawn ! complete . 
-
- %, timer:sleep(5000), gather_tweets().
-
-            
-
-
-map_reduce() ->
+reduce() ->
 
 Spawn = spawn(twitterminer_riak, init, [allthebuckets]), 
 
@@ -178,7 +146,35 @@ Key_list = [riakc_pb_socket:list_keys(Pid, X) || X <- Binary_List], Filtered = [
 
  [update_tweet(Pid, Constraint, Spawn, {{Account, C},list_to_integer(binary_to_list(T)) }) || {{Account, C}, T} <- Tuples], Spawn ! complete, timer:sleep(20000), gather_tweets().
 
+            %%Example of using the reduce part concurrently.
 
+          tryPurge() -> spawn(twitterminer_riak, concurrent_mapreduce, [account4, index, 1]),
+            spawn(twitterminer_riak, concurrent_mapreduce, [account1, sosse, 1]), 
+            spawn(twitterminer_riak, concurrent_mapreduce, [account2, moderaterna, 1]),
+            spawn(twitterminer_riak, concurrent_mapreduce, [account6, sd, 1]),
+            spawn(twitterminer_riak, concurrent_mapreduce, [account1, miljopartiet, 1]),
+            spawn(twitterminer_riak, concurrent_mapreduce, [account2, kristdemokraterna, 1]),
+            spawn(twitterminer_riak, concurrent_mapreduce, [account6, vanstern, 1]),
+            spawn(twitterminer_riak, concurrent_mapreduce, [account5, folkpartiet, 1]),
+            spawn(twitterminer_riak, concurrent_mapreduce, [account5, feminism, 1]),
+            spawn(twitterminer_riak, concurrent_mapreduce, [account4, centerpartiet, 1]).
+
+
+%Concurrent version of reduce
+
+concurrent_reduce(Account, Bucket, Constraint) ->
+
+Spawn = spawn(twitterminer_riak, init, [Bucket]), 
+
+RHP = get_riak_hostport(riak1),
+  {ok, Pid} = riakc_pb_socket:start_link(RHP#hostport.host, RHP#hostport.port),
+
+Key_list = riakc_pb_socket:list_keys(Pid, binary(Bucket)), Filtered = element(2, Key_list),
+
+
+[update_tweet(Pid, Constraint, Spawn, {{Account, Bucket}, list_to_integer(binary_to_list(X))}) || X <- Filtered], Spawn ! complete . 
+
+%Tester function for viewing an individual tweet. 
 
 print(Key) ->
 
@@ -197,7 +193,7 @@ print(Key) ->
 
 
 
-
+%Makes a request to Twitter's REST API for every tweet. 
 
  update_tweet(Pid, Constraint, Spawn, {{Account, Category}, Bucket_key}) ->  
 
@@ -219,6 +215,8 @@ print(Key) ->
 {_, _, _, Result} = ibrowse:send_req(oauth:uri(URL, SignedParams), [], get, []), 
 
 Decorated = twitterminer_source:decorate_with_id(Result),
+
+%%If an error is find, either pause and wait 15 minutes or delete it. 
 case Decorated of {parsed_tweet, [{_, [{L}]}], _Tweet_body, no_id} -> 
 
 
@@ -228,7 +226,7 @@ case lists:keyfind(<<"code">>, 1, L) of
  
   _ -> sort_to_tweet(Pid, Constraint, Spawn, Category, Decorated) end. 
 
-
+%Check the retweet count of every tweet. If it meets the constraint, put in in the corresponding popular bucket and delete it from old one. Otherwise simply delete it. 
 sort_to_tweet(Pid, Constraint, Spawn, Category, {parsed_tweet, L, Tweet_body, {id, Id}}) -> 
   		case lists:keyfind(<<"retweet_count">>, 1, L) of
    		 {_, Count} -> 
@@ -239,9 +237,8 @@ sort_to_tweet(Pid, Constraint, Spawn, Category, {parsed_tweet, L, Tweet_body, {i
 
 sort_to_tweet(_,_ , _, _, Stuff) -> io:format("Unknown input: ~p~n", [Stuff]).
 
-
-
-counter_loop(Saved, Deleted, Errors, Category) ->                 %Puts every tweet in a list
+  %Puts every tweet in a list based on what action was taken. 
+counter_loop(Saved, Deleted, Errors, Category) ->               
 receive {saved, Body, Bucket} -> counter_loop(Saved ++ [Body], Deleted, Errors, Bucket);
         {deleted, Body, Bucket}->  counter_loop(Saved, Deleted ++ [Body], Errors, Bucket);
         {errors, Body, Bucket} ->   counter_loop(Saved, Deleted, Errors ++ [Body], Bucket);
@@ -250,13 +247,14 @@ receive {saved, Body, Bucket} -> counter_loop(Saved ++ [Body], Deleted, Errors, 
 init(Category) -> counter_loop([], [], [], Category).
 
 
+% Reduces the tweets to a value
+reduce_tweets([]) -> 0;              
+reduce_tweets([_|T]) -> 1 + reduce_tweets(T).
 
-count_tweets([]) -> 0;              % Reduces the tweets to a value
-count_tweets([_|T]) -> 1 + count_tweets(T).
-
+%Prints how many tweets have been reduce and the percentage of which action was taken, 
 calculate(Saved, Deleted, Errors, Category) -> 
 
-SaveFix = count_tweets(Saved), DeleteFix = count_tweets(Deleted), ErrorFix = count_tweets(Errors), Merge = SaveFix + DeleteFix + ErrorFix, 
+SaveFix = reduce_tweets(Saved), DeleteFix = reduce_tweets(Deleted), ErrorFix = reduce_tweets(Errors), Merge = SaveFix + DeleteFix + ErrorFix, 
 
 case Merge > 0 of 
 
@@ -271,22 +269,22 @@ io:format("Tweets sorted: ~p in bucket <<~p>>. Results are as following:~n Popul
 false -> io:format("No tweets sorted in bucket <<~p>>.~n", [Category]) end.
 
 
-
+%%Creates a new bucket with the name name, but adds "popular" to it. 
 updateCategory(Category) -> list_to_atom(atom_to_list(Category) ++ "popular"). 
 
 
-
+%Deletes the tweet from Riak.
 delete_tweet(Pid, Category, {parsed_tweet, _L, _Tweet_body, {id, Id}}) ->                             
 riakc_pb_socket:delete(Pid, binary(Category), list_to_binary(integer_to_list(Id)));
 	delete_tweet(_, _, _) -> io:format("delete_tweet did not match: ~n", []).
-
+	
+%Saves a tweet into the "popular" bucket of the category. 
 save_popular(Pid, Category, {parsed_tweet, _L, Tweet_body, {id, Id}}) ->
   Obj = riakc_obj:new(binary(updateCategory(Category)), list_to_binary(integer_to_list(Id)), Tweet_body),
   riakc_pb_socket:put(Pid, Obj, [{w, 0}]);
 save_popular(_, _, _) -> io:format("save_popular did not match: ~n", []).
 
-
-
+%Fixer function for deleting all tweets in a bucket, used for testing purposes. 
 delete_all_in_bucket(Pid, Category, Id) -> 
 riakc_pb_socket:delete(Pid, binary(Category), Id).
 
