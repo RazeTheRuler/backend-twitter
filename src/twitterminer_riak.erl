@@ -3,7 +3,7 @@
 -export([start_stream/2, twitter_save_pipeline/5, get_riak_hostport/1
 
 
-	, initiate_bucket_purge/0, print/1, gather_tweets/0, counter_loop/4, init/1, count_tweets/1, tryPurge/0, gather_concurrent/0, delete_all_in_bucket/3, concurrent_purge/3]).  
+	, map_reduce/0, print/1, gather_tweets/0, counter_loop/4, init/1, count_tweets/1, tryPurge/0, gather_concurrent/0, delete_all_in_bucket/3, concurrent_purge/3]).  
 
 -record(hostport, {host, port}). 
 -record(account_keys, {api_key, api_secret,
@@ -153,7 +153,7 @@ Key_list = riakc_pb_socket:list_keys(Pid, binary(Bucket)), Filtered = element(2,
             
 
 
-initiate_bucket_purge() ->
+map_reduce() ->
 
 Spawn = spawn(twitterminer_riak, init, [allthebuckets]), 
 
