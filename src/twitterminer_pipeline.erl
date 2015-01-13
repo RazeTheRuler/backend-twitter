@@ -72,7 +72,7 @@ consumer_loop(P, Sink, Sender, State, Spawn) ->
 
 counter_loop(Count, Category) ->                 %Puts every tweet in a list to reduce later
 receive {_From, counter, MSG} -> counter_loop(Count ++ [MSG], Category);
-        {_From, done} -> io:format("Category ~p received ~p new tweets this stream.~n", [Category, twitterminer_riak:count_tweets(Count)]) end.
+        {_From, done} -> io:format("Category ~p received ~p new tweets this stream.~n", [Category, twitterminer_riak:reduce_tweets(Count)]) end.
 
 init(Category) -> counter_loop([], Category).
 
