@@ -3,7 +3,7 @@
 -export([start_stream/2, twitter_save_pipeline/5, get_riak_hostport/1
 
 
-	, map_reduce/0, print/1, gather_tweets/0, counter_loop/4, init/1, count_tweets/1, tryPurge/0, gather_concurrent/0, delete_all_in_bucket/3, concurrent_purge/3]).  
+	, map_reduce/0, print/1, gather_tweets/0, counter_loop/4, init/1, count_tweets/1, tryPurge/0, gather_concurrent/0, delete_all_in_bucket/3, concurrent_mapreduce/3]).  
 
 -record(hostport, {host, port}). 
 -record(account_keys, {api_key, api_secret,
@@ -122,21 +122,21 @@ sort_list( Category_list, Id_list)->
 
              %%Example of using the sorting part concurrency.
 
-          tryPurge() -> spawn(twitterminer_riak, concurrent_purge, [account4, index, 1]),
-            spawn(twitterminer_riak, concurrent_purge, [account1, sosse, 1]), 
-            spawn(twitterminer_riak, concurrent_purge, [account2, moderaterna, 1]),
-            spawn(twitterminer_riak, concurrent_purge, [account6, sd, 1]),
-            spawn(twitterminer_riak, concurrent_purge, [account1, miljopartiet, 1]),
-            spawn(twitterminer_riak, concurrent_purge, [account2, kristdemokraterna, 1]),
-            spawn(twitterminer_riak, concurrent_purge, [account6, vanstern, 1]),
-            spawn(twitterminer_riak, concurrent_purge, [account5, folkpartiet, 1]),
-            spawn(twitterminer_riak, concurrent_purge, [account5, feminism, 1]),
-            spawn(twitterminer_riak, concurrent_purge, [account4, centerpartiet, 1]).
+          tryPurge() -> spawn(twitterminer_riak, concurrent_mapreduce, [account4, index, 1]),
+            spawn(twitterminer_riak, concurrent_mapreduce, [account1, sosse, 1]), 
+            spawn(twitterminer_riak, concurrent_mapreduce, [account2, moderaterna, 1]),
+            spawn(twitterminer_riak, concurrent_mapreduce, [account6, sd, 1]),
+            spawn(twitterminer_riak, concurrent_mapreduce, [account1, miljopartiet, 1]),
+            spawn(twitterminer_riak, concurrent_mapreduce, [account2, kristdemokraterna, 1]),
+            spawn(twitterminer_riak, concurrent_mapreduce, [account6, vanstern, 1]),
+            spawn(twitterminer_riak, concurrent_mapreduce, [account5, folkpartiet, 1]),
+            spawn(twitterminer_riak, concurrent_mapreduce, [account5, feminism, 1]),
+            spawn(twitterminer_riak, concurrent_mapreduce, [account4, centerpartiet, 1]).
 
 
 
 
-concurrent_purge(Account, Bucket, Constraint) ->
+concurrent_mapreduce(Account, Bucket, Constraint) ->
 
 Spawn = spawn(twitterminer_riak, init, [Bucket]), 
 
