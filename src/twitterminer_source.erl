@@ -5,6 +5,8 @@
 -record(account_keys, {api_key, api_secret,
                        access_token, access_token_secret}).
 
+% Thanks to our teacher Michal Palka who contributed with the code for the HTTP chunks solution/streaming.
+
 keyfind(Key, L) ->
   {Key, V} = lists:keyfind(Key, 1, L),
   V.
