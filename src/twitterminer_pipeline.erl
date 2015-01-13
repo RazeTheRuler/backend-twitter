@@ -1,6 +1,10 @@
 -module(twitterminer_pipeline).
 -export([build_link/1, terminate/1, join/1, consumer/3, map/1, raw_transformer/1, producer/2, counter_loop/2, init/1]).
 
+
+% Thanks to our teacher Michal Palka who contributed with the code for the pipeline/streaming.
+
+
 % @doc Build a pipeline and run it, returning a handle to it. A pipeline is a list of stages
 % built 'backwards' - producer is the last element, and consumer is the first one. The pipeline
 % is linked to the calling process.
@@ -66,7 +70,7 @@ consumer_loop(P, Sink, Sender, State, Spawn) ->
     {error, Reason} -> Sink ! {answer, {error, Reason, State}}
   end.
 
-counter_loop(Count, Category) ->                 %Puts every tweet in a list
+counter_loop(Count, Category) ->                 %Puts every tweet in a list to reduce later
 receive {_From, counter, MSG} -> counter_loop(Count ++ [MSG], Category);
         {_From, done} -> io:format("Category ~p received ~p new tweets this stream.~n", [Category, twitterminer_riak:count_tweets(Count)]) end.
 
